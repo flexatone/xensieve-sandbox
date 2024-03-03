@@ -24,7 +24,7 @@ use xensieve::Sieve;
 //     }
 // }
 
-fn sieve_to_str(value: String) -> String {
+pub fn sieve_to_str(value: String) -> String {
     Sieve::new(&value).to_string()
 }
 
