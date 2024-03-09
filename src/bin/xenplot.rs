@@ -15,7 +15,8 @@ fn plot_sieves(
     let line_thickness = 5; // Adjust the thickness of the line
 
     let root = SVGBackend::new("test-plot.svg", (fig_w, fig_h)).into_drawing_area();
-    root.fill(&WHITE)?;
+    // root.fill(&WHITE)?;
+    root.fill(&RGBColor(240, 240, 240))?;
 
     // .caption("Sieve", ("sans-serif", 30))
     let mut chart = ChartBuilder::on(&root)
@@ -46,7 +47,7 @@ fn plot_sieves(
 
         // do not try to center label; instead, just shift from left bound by a margin
         let label_position = (
-                (fig_y_label_size + 20) + ((col_width - 4) * x as i32),
+                (fig_y_label_size + 30) + ((col_width - 4) * x as i32),
                 fig_h as i32 - fig_x_label_size,
                 ); // Example calculation for label position
 
