@@ -9,7 +9,7 @@ fn plot_sieves(
     let fig_w: u32 = 600;
     let fig_h: u32 = 700;
     let fig_y_label_size = 50;
-    let fig_x_label_size = 140; // bottom space for vertical labels
+    let fig_x_label_size = 180; // bottom space for vertical labels
     let count_col: i32 = sieve_strings.len().try_into()?;
     let line_color = &RGBColor(30, 30, 180).mix(0.6);
     let line_thickness = 5; // Adjust the thickness of the line
