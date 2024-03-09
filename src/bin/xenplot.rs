@@ -3,8 +3,7 @@ use xensieve::Sieve;
 
 fn plot_sieves(
         sieve_strings: Vec<String>,
-        value_min: i32,
-        value_max: i32,
+        range: (i32, i32),
         ) -> Result<(), Box<dyn std::error::Error>> {
 
     let fig_w: u32 = 700;
@@ -20,18 +19,12 @@ fn plot_sieves(
         .margin(10)
         .x_label_area_size(30)
         .y_label_area_size(fig_y_label_size)
-        .build_cartesian_2d(0..count_col, value_min-1..value_max+1)?;
+        .build_cartesian_2d(0..count_col, range.0-1..range.1+1)?;
 
     // make x labels transparent
     chart.configure_mesh()
         .x_label_style(("sans-serif", 20).into_font().color(&RGBAColor(0, 0, 0, 0.0)))
         .draw()?;
-
-    // let column_data = vec![
-    //     (0, vec![1, 7, 13], "4@2"), // Column at x=2 with stacks
-    //     (1, vec![2, 3, 8, 20], "4@3"), // Column at x=5 with stacks
-    //     // Add more columns as needed
-    // ];
 
     let line_color = &RGBColor(30, 120, 120).mix(0.5);
     let line_thickness = 12; // Adjust the thickness of the line
@@ -75,5 +68,5 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             "!30@10".to_string(),
             "(4@2|5@0) & !30@10".to_string(),
             ];
-    plot_sieves(sieve_str, -10, 30)
+    plot_sieves(sieve_str, (-30, 30))
 }
