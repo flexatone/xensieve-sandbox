@@ -1,15 +1,6 @@
 use plotters::prelude::*;
 use xensieve::Sieve;
 
-// not sure how to pass backend into a function
-// fn draw(
-//     sieve_x: &str,
-//     sieve_y: &str,
-//     ) -> Result<(), Box<dyn std::error::Error>> {
-//     root.draw(&Circle::new((100, 100), 50, ShapeStyle::from(&RED).filled()))?;
-//     Ok(())
-// }
-
 #[derive(Clone, Debug)]
 pub(crate) struct DrawSpec {
     sieve_x: String,
@@ -21,13 +12,12 @@ pub(crate) struct DrawSpec {
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Define the path to the output SVG
     let path = "test-plot-circ.svg";
-    let range = (0, 50000);
     let area = (1000, 1000);
 
     let root = SVGBackend::new(path, area).into_drawing_area();
-
     root.fill(&RGBColor(40, 40, 40))?;
 
+    let range = (0, 20000); // TODO: set range as a DrawSpec attribute
     let draw_specs = vec![
         DrawSpec{
             sieve_x: "(200@2|270@0) & !120@10".to_string(),
@@ -49,7 +39,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         },
 
     ];
-
 
     for ds in draw_specs {
         let sieve_x = Sieve::new(&ds.sieve_x);
