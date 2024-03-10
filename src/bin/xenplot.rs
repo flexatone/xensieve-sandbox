@@ -2,19 +2,21 @@ use plotters::prelude::*;
 use xensieve::Sieve;
 
 fn plot_sieves(
+        file_name: &str,
         sieve_strings: Vec<String>,
         range: (i32, i32), // value range used to plot sieve
+        col_width: u32,
         ) -> Result<(), Box<dyn std::error::Error>> {
 
-    let fig_w: u32 = 600;
-    let fig_h: u32 = 700;
-    let fig_y_label_size = 50;
-    let fig_x_label_size = 180; // bottom space for vertical labels
     let count_col: i32 = sieve_strings.len().try_into()?;
+    let fig_y_label_size = 50;
+    let fig_w: u32 = fig_y_label_size as u32 + col_width * count_col as u32;
+    let fig_h: u32 = 700;
+    let fig_x_label_size = 180; // bottom space for vertical labels
     let line_color = &RGBColor(30, 30, 180).mix(0.6);
     let line_thickness = 5; // Adjust the thickness of the line
 
-    let root = SVGBackend::new("test-plot.svg", (fig_w, fig_h)).into_drawing_area();
+    let root = SVGBackend::new(file_name, (fig_w, fig_h)).into_drawing_area();
     // root.fill(&WHITE)?;
     root.fill(&RGBColor(240, 240, 240))?;
 
@@ -62,12 +64,30 @@ fn plot_sieves(
 
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let sieve_str = vec![
+    plot_sieves(
+        "test-plot-a.svg",
+        vec![
             "4@2".to_string(),
             "5@0".to_string(),
             "4@2|5@0".to_string(),
             "!30@10".to_string(),
             "(4@2|5@0) & !30@10".to_string(),
-            ];
-    plot_sieves(sieve_str, (-30, 30))
+            ],
+        (-30, 30),
+        60,
+    )?;
+
+    plot_sieves(
+        "test-plot-b.svg",
+        vec![
+            "10@2|10@3".to_string(),
+            "5@0".to_string(),
+            "!(5@0|5@2)".to_string(),
+            "15@7".to_string(),
+            ],
+        (-30, 30),
+        60,
+    )?;
+
+    Ok(())
 }
