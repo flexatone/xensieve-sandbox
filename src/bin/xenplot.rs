@@ -1,61 +1,69 @@
 use plotters::prelude::*;
 use xensieve::Sieve;
 
-fn plot_sieves(
-        file_name: &str,
-        sieve_strings: Vec<String>,
-        range: (i32, i32), // value range used to plot sieve
-        col_width: u32,
-        ) -> Result<(), Box<dyn std::error::Error>> {
 
-    let count_col: i32 = sieve_strings.len().try_into()?;
-    let fig_y_label_size = 50;
-    let fig_w: u32 = fig_y_label_size as u32 + col_width * count_col as u32;
-    let fig_h: u32 = 700;
-    let fig_x_label_size = 180; // bottom space for vertical labels
-    let line_color = &RGBColor(30, 30, 180).mix(0.6);
+fn plot_sieves(
+    file_name: &str,
+    sieve_strings: Vec<String>,
+    range: (i32, i32), // value range used to plot sieve
+    band_height: u32,
+    ) -> Result<(), Box<dyn std::error::Error>> {
+
+    let count_row: i32 = sieve_strings.len().try_into()?;
+    let fig_x_label_size = 20;
+
+    // do I need to include margin in this?
+    let fig_h: u32 = fig_x_label_size as u32 + band_height * count_row as u32;
+    let fig_w: u32 = 700;
+    let fig_y_label_size = 180; // left space for y labels
+    let fig_margin: u32 = 10;
+
+    let line_colors = vec![
+        RGBColor(30, 30, 180).mix(0.6),
+        RGBColor(30, 90, 180).mix(0.8),
+    ];
     let line_thickness = 5; // Adjust the thickness of the line
 
     let root = SVGBackend::new(file_name, (fig_w, fig_h)).into_drawing_area();
-    // root.fill(&WHITE)?;
     root.fill(&RGBColor(240, 240, 240))?;
+    // .caption("Sieve", ("sans-serif", 30));
 
-    // .caption("Sieve", ("sans-serif", 30))
     let mut chart = ChartBuilder::on(&root)
-        .margin(10)
+        .margin(fig_margin)
         .x_label_area_size(fig_x_label_size)
         .y_label_area_size(fig_y_label_size)
-        .build_cartesian_2d(0..count_col, range.0-1..range.1+1)?;
+        .build_cartesian_2d(range.0-1..range.1+1, 0..count_row)?;
 
     // make x labels transparent
     chart.configure_mesh()
-        .x_label_style(("sans-serif", 20).into_font().color(&RGBAColor(0, 0, 0, 0.0)))
+        .y_label_style(("sans-serif", 20).into_font().color(&RGBAColor(0, 0, 0, 0.0)))
         .draw()?;
 
-    let col_width = (fig_w as i32 - fig_y_label_size) / count_col;
+    // subtract bottom labels from height, then divide by rows
+    let band_height = (fig_h as i32 - fig_x_label_size) / count_row;
 
-    // for (x, lines, label) in column_data {
-    for (x, label) in sieve_strings.iter().enumerate() {
+    for (y, label) in sieve_strings.iter().enumerate() {
         let lines: Vec<i128> = Sieve::new(&label).iter_value(
                 range.0 as i128..range.1 as i128).collect();
 
-        for &y in &lines {
+        // the charting positions go from bottom to top, so invert and shift
+        let y_pos: i32 = count_row - y as i32 - 1;
+        for &x in &lines {
             // Draw a horizontal line at each specified y-value
             chart.draw_series(LineSeries::new(
-                vec![(x as i32, y as i32), (x as i32 + 1, y as i32)],
-                Into::<ShapeStyle>::into(line_color.stroke_width(line_thickness)),
+                vec![(x as i32, y_pos), (x as i32, y_pos + 1)],
+                Into::<ShapeStyle>::into(line_colors[y % 2].stroke_width(line_thickness)),
             ))?;
         }
-
         // do not try to center label; instead, just shift from left bound by a margin
         let label_position = (
-                (fig_y_label_size + 30) + ((col_width - 4) * x as i32),
-                fig_h as i32 - fig_x_label_size,
-                ); // Example calculation for label position
+            fig_margin as i32, // horizontal position
+            20 + ((band_height - 4) * y as i32),
+            );
 
         root.draw_text(
             label,
-            &("sans-serif", 20).into_font().color(&BLACK).transform(FontTransform::Rotate90),
+            &("sans-serif", 18).into_font().color(&BLACK),
             label_position,
         )?;
     }
@@ -64,6 +72,8 @@ fn plot_sieves(
 
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
+
+    // this show shows the example of using a union group first, then selectively removing lines by intersecting with a complement group
     plot_sieves(
         "test-plot-a.svg",
         vec![
@@ -74,7 +84,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             "(4@2|5@0) & !30@10".to_string(),
             ],
         (-30, 30),
-        60,
+        36,
     )?;
 
     plot_sieves(
@@ -86,7 +96,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             "15@7".to_string(),
             ],
         (-30, 30),
-        60,
+        36,
     )?;
 
     Ok(())
