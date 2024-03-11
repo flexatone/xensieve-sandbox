@@ -10,6 +10,6 @@ imageproc = "0.23.0"
 inquire = {version = "0.7.0", features = ["date", "editor"]}
 plotters = "0.3.5"
 ratatui = "0.26.1"
-xensieve = "0.2.0"
+xensieve = "0.3.0"
 
 
