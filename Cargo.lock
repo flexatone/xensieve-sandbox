@@ -1764,9 +1764,9 @@ dependencies = [
 
 [[package]]
 name = "xensieve"
-version = "0.2.0"
+version = "0.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6e0a262a61e281c1aed717052bb07b1c4bc4973ab8eca5f8a376faf6359e80f9"
+checksum = "d825fdcbb81c1d735253e9dc22b9c1d7d5f60894606063b00e0e7f8ebe3a7529"
 
 [[package]]
 name = "xensieve-sandbox"
