@@ -15,6 +15,9 @@ fn plot_sieves(
 
     // do I need to include margin in this?
     let fig_h: u32 = fig_x_label_size as u32 + band_height * count_row as u32;
+    // if fig_h < 100 {
+    //     fig_h = 100;
+    // }
     let fig_y_label_size = 180; // left space for y labels
     let fig_margin: u32 = 10;
 
@@ -73,20 +76,48 @@ fn plot_sieves(
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
 
-    // this show shows the example of using a union group first, then selectively removing lines by intersecting with a complement group
     plot_sieves(
-        "test-plot-a.svg",
+        "images/residual-a.svg",
         vec![
-            "4@2".to_string(),
             "5@0".to_string(),
-            "4@2|5@0".to_string(),
+            "4@2".to_string(),
+            "30@10".to_string(),
             "!30@10".to_string(),
-            "(4@2|5@0) & !30@10".to_string(),
             ],
         (0, 50),
         25, // bar height
-        650, // fig width
+        620, // fig width
     )?;
+
+    plot_sieves(
+        "images/sieve-a.svg",
+        vec![
+            "5@0".to_string(),
+            "4@2".to_string(),
+            "5@0|4@2".to_string(),
+            "!30@10".to_string(),
+            "(5@0|4@2)&!30@10".to_string(),
+            ],
+        (0, 50),
+        25, // bar height
+        620, // fig width
+    )?;
+
+
+    // this show shows the example of using a union group first, then selectively removing lines by intersecting with a complement group
+    // plot_sieves(
+    //     "test-plot-a.svg",
+    //     vec![
+    //         "4@2".to_string(),
+    //         "5@0".to_string(),
+    //         "4@2|5@0".to_string(),
+    //         "!30@10".to_string(),
+    //         "(4@2|5@0) & !30@10".to_string(),
+    //         ],
+    //     (0, 50),
+    //     25, // bar height
+    //     620, // fig width
+    // )?;
 
     // plot_sieves(
     //     "test-plot-b.svg",
