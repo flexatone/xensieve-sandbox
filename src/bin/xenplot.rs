@@ -7,6 +7,7 @@ fn plot_sieves(
     sieve_strings: Vec<String>,
     range: (i32, i32), // value range used to plot sieve
     band_height: u32,
+    fig_width: u32,
     ) -> Result<(), Box<dyn std::error::Error>> {
 
     let count_row: i32 = sieve_strings.len().try_into()?;
@@ -14,18 +15,17 @@ fn plot_sieves(
 
     // do I need to include margin in this?
     let fig_h: u32 = fig_x_label_size as u32 + band_height * count_row as u32;
-    let fig_w: u32 = 700;
     let fig_y_label_size = 180; // left space for y labels
     let fig_margin: u32 = 10;
 
     let line_colors = vec![
-        RGBColor(30, 30, 180).mix(0.6),
-        RGBColor(30, 90, 180).mix(0.8),
+        RGBColor(90, 90, 90),
+        RGBColor(140, 140, 140),
     ];
     let line_thickness = 5; // Adjust the thickness of the line
 
-    let root = SVGBackend::new(file_name, (fig_w, fig_h)).into_drawing_area();
-    root.fill(&RGBColor(240, 240, 240))?;
+    let root = SVGBackend::new(file_name, (fig_width, fig_h)).into_drawing_area();
+    root.fill(&RGBColor(220, 220, 230))?;
     // .caption("Sieve", ("sans-serif", 30));
 
     let mut chart = ChartBuilder::on(&root)
@@ -83,21 +83,22 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             "!30@10".to_string(),
             "(4@2|5@0) & !30@10".to_string(),
             ],
-        (-30, 30),
-        36,
+        (0, 50),
+        25, // bar height
+        660, // fig width
     )?;
 
-    plot_sieves(
-        "test-plot-b.svg",
-        vec![
-            "10@2|10@3".to_string(),
-            "5@0".to_string(),
-            "!(5@0|5@2)".to_string(),
-            "15@7".to_string(),
-            ],
-        (-30, 30),
-        36,
-    )?;
+    // plot_sieves(
+    //     "test-plot-b.svg",
+    //     vec![
+    //         "10@2|10@3".to_string(),
+    //         "5@0".to_string(),
+    //         "!(5@0|5@2)".to_string(),
+    //         "15@7".to_string(),
+    //         ],
+    //     (-30, 30),
+    //     36,
+    // )?;
 
     Ok(())
 }
