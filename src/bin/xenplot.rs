@@ -85,7 +85,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             ],
         (0, 50),
         25, // bar height
-        660, // fig width
+        650, // fig width
     )?;
 
     // plot_sieves(
